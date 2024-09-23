@@ -1,15 +1,19 @@
 using UnityEngine;
 
-public class PlayerCollision : MonoBehaviour
+namespace Chapter.Command
 {
-    public PlayerMovement movement;
-
-    void OnCollisionEnter (Collision collisionInfo)
+    public class PlayerCollision : MonoBehaviour
     {
-        if (collisionInfo.collider.tag == "Obstacle") 
+        public PlayerMovement movement;
+
+        void OnCollisionEnter(Collision collisionInfo)
         {
-            movement.enabled = false;
-            FindObjectOfType<GameManager>().EndGame();
+            if (collisionInfo.collider.tag == "Obstacle")
+            {
+                movement.enabled = false;
+                FindObjectOfType<GameManager>().EndGame();
+            }
         }
     }
+
 }
