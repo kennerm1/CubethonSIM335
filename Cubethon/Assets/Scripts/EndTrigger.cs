@@ -1,11 +1,14 @@
 using UnityEngine;
 
-public class EndTrigger : MonoBehaviour
+namespace Chapter.Observer
 {
-    public GameManager gameManager;
-
-    void OnTriggerEnter()
+    public class EndTrigger : MonoBehaviour
     {
-        gameManager.CompleteLevel();
+        public GameManager gameManager;
+
+        void OnTriggerEnter()
+        {
+            gameManager.CompleteLevel();
+        }
     }
 }

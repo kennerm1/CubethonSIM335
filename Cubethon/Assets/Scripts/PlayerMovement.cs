@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -5,14 +6,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody rb;
-    public float forwardForce = 2000f;
-    public float sidewaysForce = 500f;
-    GameManager gameManager;
-
-    void Start()
-    {
-        gameManager = FindObjectOfType<GameManager>();
-    }
+    public float forwardForce = 2000;
+    public float sidewaysForce = 500;
 
     void FixedUpdate()
     {
@@ -20,24 +15,27 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKey("d"))
         {
-            Command moveRight = new MoveRight(rb, sidewaysForce);
-            Invoker invoker = new Invoker();
-            invoker.SetCommand(moveRight);
-            invoker.ExecuteCommand();
+            rb.AddForce(sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
         }
 
         if (Input.GetKey("a"))
         {
-            Command moveLeft = new MoveLeft(rb, sidewaysForce);
-            Invoker invoker = new Invoker();
-            invoker.SetCommand(moveLeft);
-            invoker.ExecuteCommand();
+            rb.AddForce(-sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            rb.AddForce(sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            rb.AddForce(-sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
         }
 
         if (rb.position.y < -1f)
         {
-            FindObjectOfType<GameManager>().EndGame(null);
+            FindObjectOfType<GameManager>().EndGame();
         }
     }
 }
-

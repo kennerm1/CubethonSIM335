@@ -1,10 +1,14 @@
 using UnityEngine;
 
-public class Credits : MonoBehaviour
+namespace Chapter.Observer
 {
-    public void Quit()
+    public class Credits : MonoBehaviour
     {
-        Debug.Log("Quit");
-        Application.Quit();
+        public void Quit()
+        {
+            Debug.Log("Quit");
+            Application.Quit();
+        }
     }
+
 }
