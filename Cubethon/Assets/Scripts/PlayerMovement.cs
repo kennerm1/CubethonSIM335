@@ -1,81 +1,42 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-namespace Chapter.Command
+public class PlayerMovement : MonoBehaviour
 {
-    public class PlayerMovement : MonoBehaviour
+    public Rigidbody rb;
+    public float forwardForce = 2000f;
+    public float sidewaysForce = 500f;
+    GameManager gameManager;
+
+    void Start()
     {
-        private Invoker _invoker;
-        public Rigidbody rb;
-        public float forwardForce = 2000;
-        public float sidewaysForce = 500;
-        private bool _isReplaying;
-        private bool _isRecording;
-        private Command _buttonA, _buttonD;
+        gameManager = FindObjectOfType<GameManager>();
+    }
 
-        void Update()
+    void FixedUpdate()
+    {
+        rb.AddForce(0, 0, forwardForce * Time.deltaTime);
+
+        if (Input.GetKey("d"))
         {
-            if (!_isReplaying && _isRecording)
-            {
-                if (Input.GetKeyUp(KeyCode.A))
-                    _invoker.ExecuteCommand(_buttonA);
-
-                if (Input.GetKeyUp(KeyCode.D))
-                    _invoker.ExecuteCommand(_buttonD);
-            }
-        }
-        void FixedUpdate()
-        {
-            rb.AddForce(0, 0, forwardForce * Time.deltaTime);
-
-            if (Input.GetKey("d"))
-            {
-                rb.AddForce(sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
-            }
-            if (Input.GetKey("a"))
-            {
-                rb.AddForce(-sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                rb.AddForce(sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                rb.AddForce(-sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
-            }
-
-            if (rb.position.y < -1f)
-            {
-                FindObjectOfType<GameManager>().EndGame();
-            }
+            Command moveRight = new MoveRight(rb, sidewaysForce);
+            Invoker invoker = new Invoker();
+            invoker.SetCommand(moveRight);
+            invoker.ExecuteCommand();
         }
 
-        void OnGUI()
+        if (Input.GetKey("a"))
         {
-            if (GUILayout.Button("Start Recording"))
-            {
-                _isReplaying = false;
-                _isRecording = true;
-                _invoker.Record();
-            }
+            Command moveLeft = new MoveLeft(rb, sidewaysForce);
+            Invoker invoker = new Invoker();
+            invoker.SetCommand(moveLeft);
+            invoker.ExecuteCommand();
+        }
 
-            if (GUILayout.Button("Stop Recording"))
-            {
-                _isRecording = false;
-            }
-
-            if (!_isRecording)
-            {
-                if (GUILayout.Button("Start Replay"))
-                {
-                    _isRecording = false;
-                    _isReplaying = true;
-                    _invoker.Replay();
-                }
-            }
+        if (rb.position.y < -1f)
+        {
+            FindObjectOfType<GameManager>().EndGame(null);
         }
     }
 }

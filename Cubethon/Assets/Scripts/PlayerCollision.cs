@@ -1,19 +1,20 @@
 using UnityEngine;
 
-namespace Chapter.Command
+public class PlayerCollision : MonoBehaviour
 {
-    public class PlayerCollision : MonoBehaviour
-    {
-        public PlayerMovement movement;
+    public PlayerMovement movement;
+    public delegate void HitObstacle(Collision collisionInfo);
+    public static event HitObstacle OnHitObstacle;
 
-        void OnCollisionEnter(Collision collisionInfo)
+    private void OnCollisionEnter(Collision collisionInfo)
+    {
+        if (collisionInfo.collider.tag == "Obstacle")
         {
-            if (collisionInfo.collider.tag == "Obstacle")
+            if (OnHitObstacle != null)
             {
-                movement.enabled = false;
-                FindObjectOfType<GameManager>().EndGame();
+                OnHitObstacle(collisionInfo);
             }
+            movement.enabled = false;
         }
     }
-
 }
